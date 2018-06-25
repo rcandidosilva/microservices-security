@@ -50,19 +50,6 @@ services:
     networks:
       - microservices
 
-  ui-frontend:
-    build: ui-service
-    image: microservices/ui-service
-    expose:
-      - 4200
-    ports:
-      - 4200:4200
-    volumes:
-      - ./ui-service:/opt/frontend
-    command: sh -c 'npm install && ng serve --host 0.0.0.0'
-    networks:
-      - microservices
-
 networks:
   microservices:
     driver: bridge
