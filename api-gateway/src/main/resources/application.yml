@@ -1,0 +1,48 @@
+server:
+  port: ${PORT:8080}
+ 
+spring:
+  application:
+    name: api-gateway
+ 
+info:
+  name: api-gateway
+  description: API Gateway Sample
+  
+zuul:
+  add-host-header: true
+  ignore-security-headers: false
+  sensitiveHeaders:
+  routes:
+    security-server:
+      path: /uaa/**
+      serviceId: oauth2-server
+    aluno-service:
+      path: /conference/**
+      serviceId: conference-service
+    disciplina-service:
+      path: /speaker/**
+      serviceId: speaker-service
+  ratelimit:
+    enabled: true
+    repository: IN_MEMORY
+    behind-proxy: true
+    default-policy: #optional - will apply unless specific policy exists
+      limit: 20 #optional - request number limit per refresh interval window
+      quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+      refresh-interval: 60 #default value (in seconds)
+      type: #optional
+        - user
+        - origin
+        - url
+
+eureka:
+ client:
+   serviceUrl:
+     defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+ instance:
+   preferIpAddress: true
+
+security:
+  basic:
+    enabled: false

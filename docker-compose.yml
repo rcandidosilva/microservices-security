@@ -1,0 +1,68 @@
+version: '2'
+services:
+  discovery-server:
+    image: microservices/discovery-server
+    ports:
+      - 8761:8761
+    networks:
+      - microservices
+
+  oauth2-server:
+    image: microservices/oauth2-server
+    links:
+      - discovery-server
+    ports:
+      - 9999:9999
+    networks:
+      - microservices
+
+  speaker-service:
+    image: microservices/speaker-service
+    links:
+      - discovery-server
+      - oauth2-server
+    ports:
+      - 8081:8081
+    networks:
+      - microservices
+
+  conference-service:
+    image: microservices/conference-service
+    links:
+      - discovery-server
+      - oauth2-server
+    ports:
+      - 8082:8082
+    networks:
+      - microservices
+
+  api-gateway:
+    image: microservices/api-gateway
+    links:
+      - discovery-server
+      - oauth2-server
+      - conference-service
+      - speaker-service
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    networks:
+      - microservices
+
+  ui-frontend:
+    build: ui-service
+    image: microservices/ui-service
+    expose:
+      - 4200
+    ports:
+      - 4200:4200
+    volumes:
+      - ./ui-service:/opt/frontend
+    command: sh -c 'npm install && ng serve --host 0.0.0.0'
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    driver: bridge

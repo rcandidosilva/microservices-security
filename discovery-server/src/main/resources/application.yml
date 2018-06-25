@@ -1,0 +1,15 @@
+server:
+  port: ${PORT:8761}
+  
+info:
+  name: discovery-server
+  description: Discovery Server Sample
+  
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
